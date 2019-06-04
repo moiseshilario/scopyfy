@@ -19,5 +19,6 @@ export default createGlobalStyle`
     -webkit-font-smoothing: antialiased !important;
     background: #181818;
     font-family: 'Montserrat', sans-serif;
+    color: #fff;
   }
 `;
