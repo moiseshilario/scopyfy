@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
@@ -8,20 +8,25 @@ import { Creators as PlaylistsActions } from '../../store/ducks/playlists';
 
 import { Container, NewPlaylist, Nav } from './styles';
 
+import Loading from '../Loading';
+
 import AddPlaylistIcon from '../../assets/images/add_playlist.svg';
 
-const Sidebar = ({ playlists, getPlaylistRequest }) => {
+const Sidebar = ({ playlists, getPlaylistRequest, loading }) => {
+  const loadPlaylists = async () => {
+    await getPlaylistRequest();
+  };
+
   useEffect(() => {
-    getPlaylistRequest();
+    loadPlaylists();
   }, []);
-  const handle = () => {};
 
   return (
     <Container>
       <div>
         <Nav main>
           <li>
-            <a href="">Browse</a>
+            <Link to="/">Browse</Link>
           </li>
           <li>
             <a href="">Radio</a>
@@ -59,10 +64,11 @@ const Sidebar = ({ playlists, getPlaylistRequest }) => {
         <Nav>
           <li>
             <span>Playlists</span>
+            {loading && <Loading />}
           </li>
           {playlists.map(playlist => (
             <li key={playlist.id}>
-              <Link to={`playlists/${playlist.id}`}>{playlist.title}</Link>
+              <Link to={`/playlists/${playlist.id}`}>{playlist.title}</Link>
             </li>
           ))}
         </Nav>
@@ -77,18 +83,18 @@ const Sidebar = ({ playlists, getPlaylistRequest }) => {
 
 Sidebar.propTypes = {
   getPlaylistRequest: PropTypes.func.isRequired,
-  playlists: PropTypes.shape({
-    data: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number,
-        title: PropTypes.string,
-      }),
-    ),
-  }).isRequired,
+  playlists: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+    }),
+  ).isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
   playlists: state.playlists.data,
+  loading: state.playlists.loading,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(PlaylistsActions, dispatch);

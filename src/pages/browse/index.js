@@ -1,48 +1,66 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Creators as PlaylistsActions } from '../../store/ducks/playlists';
+
+import Loading from '../../components/Loading';
 
 import {
   Container, Title, List, Playlist,
 } from './styles';
 
-const Browse = () => (
-  <Container>
-    <Title>Browse</Title>
+const Browse = ({ playlists, loading, getPlaylistRequest }) => {
+  const loadPlaylists = async () => {
+    await getPlaylistRequest();
+  };
 
-    <List>
-      <Playlist to="/playlists/1">
-        <img
-          src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/0994d841602157.57ac63336b606.jpg"
-          alt="Playlist"
-        />
-        <strong>This is rock</strong>
-        <p>Be more productive listening rock music while you code!</p>
-      </Playlist>
-      <Playlist to="/playlists/1">
-        <img
-          src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/0994d841602157.57ac63336b606.jpg"
-          alt="Playlist"
-        />
-        <strong>This is rock</strong>
-        <p>Be more productive listening rock music while you code!</p>
-      </Playlist>
-      <Playlist to="/playlists/1">
-        <img
-          src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/0994d841602157.57ac63336b606.jpg"
-          alt="Playlist"
-        />
-        <strong>This is rock</strong>
-        <p>Be more productive listening rock music while you code!</p>
-      </Playlist>
-      <Playlist to="/playlists/1">
-        <img
-          src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/0994d841602157.57ac63336b606.jpg"
-          alt="Playlist"
-        />
-        <strong>This is rock</strong>
-        <p>Be more productive listening rock music while you code!</p>
-      </Playlist>
-    </List>
-  </Container>
-);
+  useEffect(() => {
+    loadPlaylists();
+  }, []);
 
-export default Browse;
+  return (
+    <Container>
+      <Title>
+        Browse
+        {loading && <Loading />}
+      </Title>
+
+      <List>
+        {playlists.map(playlist => (
+          <Playlist key={playlist.id} to={`/playlists/${playlist.id}`}>
+            <img src={playlist.thumbnail} alt={playlist.title} />
+            <strong>{playlist.title}</strong>
+            <p>{playlist.description}</p>
+          </Playlist>
+        ))}
+      </List>
+    </Container>
+  );
+};
+
+Browse.propTypes = {
+  getPlaylistRequest: PropTypes.func.isRequired,
+  playlists: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+      thumbnail: PropTypes.string,
+      description: PropTypes.string,
+    }),
+  ).isRequired,
+  loading: PropTypes.bool.isRequired,
+};
+
+const mapStateToProps = state => ({
+  playlists: state.playlists.data,
+  loading: state.playlists.loading,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators(PlaylistsActions, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Browse);
