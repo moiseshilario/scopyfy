@@ -17,18 +17,21 @@ export const List = styled.div`
   margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
+  height: 100%;
+  overflow: auto;
 `;
 
 export const Playlist = styled(Link)`
   display: flex;
   flex-direction: column;
-  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
   width: 250px;
   text-decoration: none;
   color: #fff;
 
-  &:first-child {
-    margin: 0;
+  &:last-child {
+    margin-right: 0;
   }
 
   &:hover img {

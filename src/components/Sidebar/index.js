@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Creators as PlaylistsActions } from '../../store/ducks/playlists';
 
 import { Container, NewPlaylist, Nav } from './styles';
 
 import AddPlaylistIcon from '../../assets/images/add_playlist.svg';
 
-const Sidebar = () => {
+const Sidebar = ({ playlists, getPlaylistRequest }) => {
+  useEffect(() => {
+    getPlaylistRequest();
+  }, []);
   const handle = () => {};
 
   return (
@@ -51,9 +60,11 @@ const Sidebar = () => {
           <li>
             <span>Playlists</span>
           </li>
-          <li>
-            <a href="">Best of Rock</a>
-          </li>
+          {playlists.map(playlist => (
+            <li key={playlist.id}>
+              <Link to={`playlists/${playlist.id}`}>{playlist.title}</Link>
+            </li>
+          ))}
         </Nav>
       </div>
       <NewPlaylist>
@@ -64,4 +75,25 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+Sidebar.propTypes = {
+  getPlaylistRequest: PropTypes.func.isRequired,
+  playlists: PropTypes.shape({
+    data: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        title: PropTypes.string,
+      }),
+    ),
+  }).isRequired,
+};
+
+const mapStateToProps = state => ({
+  playlists: state.playlists.data,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators(PlaylistsActions, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Sidebar);
