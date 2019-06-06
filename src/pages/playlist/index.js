@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -6,7 +6,9 @@ import { bindActionCreators } from 'redux';
 import { Creators as PlaylistDetailsActions } from '../../store/ducks/playlistDetails';
 import { Creators as PlayerActions } from '../../store/ducks/player';
 
-import { Container, Header, SongList } from './styles';
+import {
+  Container, Header, SongList, SongItem,
+} from './styles';
 
 import Loading from '../../components/Loading';
 
@@ -14,8 +16,15 @@ import ClockIcon from '../../assets/images/clock.svg';
 import PlusIcon from '../../assets/images/plus.svg';
 
 const Playlist = ({
-  playlist, loading, getPlaylistDetailsRequest, match, loadSong,
+  playlist,
+  loading,
+  getPlaylistDetailsRequest,
+  match,
+  loadSong,
+  currentSong,
 }) => {
+  const [selectedSong, setSelectedSong] = useState(null);
+
   useEffect(() => {
     const loadPlaylist = async () => {
       const { id } = match.params;
@@ -59,7 +68,13 @@ const Playlist = ({
             </tr>
           ) : (
             playlist.songs.map(song => (
-              <tr key={song.id} onDoubleClick={() => loadSong(song)}>
+              <SongItem
+                key={song.id}
+                onClick={() => setSelectedSong(song.id)}
+                onDoubleClick={() => loadSong(song)}
+                selected={selectedSong === song.id}
+                playing={currentSong && currentSong.id === song.id}
+              >
                 <td>
                   <img src={PlusIcon} alt="Add song" />
                 </td>
@@ -67,7 +82,7 @@ const Playlist = ({
                 <td>{song.author}</td>
                 <td>{song.album}</td>
                 <td>4:49</td>
-              </tr>
+              </SongItem>
             ))
           )}
         </tbody>
@@ -97,11 +112,15 @@ Playlist.propTypes = {
     params: PropTypes.shape({ id: PropTypes.string }),
   }).isRequired,
   loadSong: PropTypes.func.isRequired,
+  currentSong: PropTypes.shape({
+    id: PropTypes.number,
+  }).isRequired,
 };
 
 const mapStateToProps = state => ({
   playlist: state.playlistDetails.data,
   loading: state.playlistDetails.loading,
+  currentSong: state.player.currentSong,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({ ...PlaylistDetailsActions, ...PlayerActions }, dispatch);
