@@ -12,13 +12,13 @@ import {
 } from './styles';
 
 const Browse = ({ playlists, loading, getPlaylistRequest }) => {
-  const loadPlaylists = async () => {
-    await getPlaylistRequest();
-  };
-
   useEffect(() => {
+    const loadPlaylists = async () => {
+      await getPlaylistRequest();
+    };
+
     loadPlaylists();
-  }, []);
+  }, [getPlaylistRequest]);
 
   return (
     <Container>

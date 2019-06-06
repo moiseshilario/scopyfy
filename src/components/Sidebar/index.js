@@ -13,13 +13,13 @@ import Loading from '../Loading';
 import AddPlaylistIcon from '../../assets/images/add_playlist.svg';
 
 const Sidebar = ({ playlists, getPlaylistRequest, loading }) => {
-  const loadPlaylists = async () => {
-    await getPlaylistRequest();
-  };
-
   useEffect(() => {
+    const loadPlaylists = async () => {
+      await getPlaylistRequest();
+    };
+
     loadPlaylists();
-  }, []);
+  }, [getPlaylistRequest]);
 
   return (
     <Container>
