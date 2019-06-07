@@ -71,7 +71,7 @@ const Playlist = ({
               <SongItem
                 key={song.id}
                 onClick={() => setSelectedSong(song.id)}
-                onDoubleClick={() => loadSong(song)}
+                onDoubleClick={() => loadSong(song, playlist.songs)}
                 selected={selectedSong === song.id}
                 playing={currentSong && currentSong.id === song.id}
               >
