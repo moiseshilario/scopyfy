@@ -114,7 +114,7 @@ Playlist.propTypes = {
   loadSong: PropTypes.func.isRequired,
   currentSong: PropTypes.shape({
     id: PropTypes.number,
-  }).isRequired,
+  }),
 };
 
 const mapStateToProps = state => ({
