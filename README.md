@@ -12,14 +12,6 @@ You'll need [json-server](https://github.com/typicode/json-server) to run this a
 
 ## Running
 
-* json-server:
+- json-server: `json-server server.json -p 3001 -w -d 500`
 
-`json-server server.json -p 3001 -w -d 500`
-
-* react-app:
-
-`yarn start`
-
-or
-
-`npm run start`
+- react-app: `yarn start` or `npm run start`
